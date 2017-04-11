@@ -26,6 +26,17 @@ func main() {
 	r := gin.Default();
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/", indexpage)
+	r.POST("/write", func(c *gin.Context){
+		title := c.PostForm("title")
+		contents := c.PostForm("contents")
+		log.Println(title)
+		log.Println(contents)
+		testEntries = append(testEntries, Entry{
+			Title: title,
+			Contents:contents,
+		})
+		c.Redirect(http.StatusMovedPermanently, "/")
+	})
 
 	log.Fatalln(r.Run(":8080"))
 }

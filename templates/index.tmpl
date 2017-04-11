@@ -5,12 +5,17 @@
     <title>RRedit</title>
 </head>
 <body>
+<form id="myForm" action="/write" method="post">
+    Title: <input id="title_form" name="title" ></input>
+    Contents: <input id="contents_form" name="contents"></input>
+    <input type="submit" value="Submit" />
+</form>
 {{range .Items}}
 <div>
     <div><a href="/view/{{.Title}}">{{.Title}}</a></div>
     <div>{{ .Contents}}</div>
     <div> <a href = "/up/{{.Title}}">Up:{{.Upvote}} </a></div>
-    <div> <a href = "/up/{{.Title}}">Down:{{.Downvote}}</a></div>
+    <div> <a href = "/down/{{.Title}}">Down:{{.Downvote}}</a></div>
 </div>
 {{else}}
 <div><strong>no rows</strong></div>
