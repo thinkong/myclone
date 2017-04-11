@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>RRedit</title>
+</head>
+<body>
+{{range .Items}}
+<div>
+    <div><a href="/view/{{.Title}}">{{.Title}}</a></div>
+    <div>{{ .Contents}}</div>
+    <div> <a href = "/up/{{.Title}}">Up:{{.Upvote}} </a></div>
+    <div> <a href = "/up/{{.Title}}">Down:{{.Downvote}}</a></div>
+</div>
+{{else}}
+<div><strong>no rows</strong></div>
+{{end}}
+</body>
+</html>
