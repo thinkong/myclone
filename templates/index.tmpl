@@ -37,11 +37,11 @@
 <div class="container-fluid">
 {{range .Items}}
     <div class="container-fluid">
-    <div class="row"><a href="/view/{{.Title}}">{{.Title}}</a></div>
+    <div class="row">{{.Title}}</div>
     <div class="row border-between">
         <div class="col-xs-2">
-            <div class="row"> <a href = "/up/{{.Title}}">Up:{{.Upvote}} </a></div>
-            <div class="row"> <a href = "/down/{{.Title}}">Down:{{.Downvote}}</a></div>
+            <div class="row"> <a href = "/up/{{.Uid}}">Up:{{.Upvote}} </a></div>
+            <div class="row"> <a href = "/down/{{.Uid}}">Down:{{.Downvote}}</a></div>
         </div>
         <div class="col-xs-10">{{ .Contents}}</div>
     </div>
