@@ -3,22 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>RRedit</title>
+    <style>
+        .border-between > [class*='col-']:before {
+   background: #e3e3e3;
+   bottom: 0;
+   content: " ";
+   left: 0;
+   position: absolute;
+   width: 1px;
+   top: 0;
+}
+
+.border-between > [class*='col-']:first-child:before {
+   display: none;
+}
+.row {
+   border:1px solid #ccc;
+}
+.row + .row {
+        border-top:0 ;
+      }
+    </style>
 </head>
 <body>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<div class="container-fluid">
 <form id="myForm" action="/write" method="post">
     Title: <input id="title_form" name="title" ></input>
     Contents: <input id="contents_form" name="contents"></input>
     <input type="submit" value="Submit" />
 </form>
+</div>
+<div class="container-fluid">
 {{range .Items}}
-<div>
-    <div><a href="/view/{{.Title}}">{{.Title}}</a></div>
-    <div>{{ .Contents}}</div>
-    <div> <a href = "/up/{{.Title}}">Up:{{.Upvote}} </a></div>
-    <div> <a href = "/down/{{.Title}}">Down:{{.Downvote}}</a></div>
+    <div class="container-fluid">
+    <div class="row"><a href="/view/{{.Title}}">{{.Title}}</a></div>
+    <div class="row border-between">
+        <div class="col-xs-2">
+            <div class="row"> <a href = "/up/{{.Title}}">Up:{{.Upvote}} </a></div>
+            <div class="row"> <a href = "/down/{{.Title}}">Down:{{.Downvote}}</a></div>
+        </div>
+        <div class="col-xs-10">{{ .Contents}}</div>
+    </div>
 </div>
 {{else}}
-<div><strong>no rows</strong></div>
+<div><strong>Go Write Something</strong></div>
 {{end}}
+</div>
 </body>
 </html>
