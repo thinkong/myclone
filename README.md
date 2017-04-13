@@ -14,6 +14,8 @@ copy `templates` folder to bin folder
 
 then run with myclone.exe
 
+go to http://localhost:8080
+
 ## With Docker
 I have added a Docker file.
 
