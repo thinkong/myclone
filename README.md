@@ -1,18 +1,20 @@
 # myclone
 a reddit clone test
 
-~~use~~
+## Without docker
+use
 ```
-~~go get github.com/thinkong/myclone~~
+go get github.com/thinkong/myclone
 ```
 
 ```
-~~go install github.com/thinkong/myclone~~
+go install github.com/thinkong/myclone/main
 ```
-~~copy `templates` folder to bin folder~~
+copy `templates` folder to bin folder
 
-~~then run with myclone.exe~~
+then run with myclone.exe
 
+## With Docker
 I have added a Docker file.
 
 So now you can clone the repo
