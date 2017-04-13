@@ -26,36 +26,39 @@ var lock sync.Mutex
 type DBMap map[string]*Entry
 
 // InsertValue
-func InsertValue(newEntry *Entry){
+func insertValue(newEntry *Entry) {
+	// lock the store to make sure 2 people don't update at the same time.
 	lock.Lock()
 	defer lock.Unlock()
 	db1 := dataStore.Load().(DBMap)
 	db2 := make(DBMap)
-	for k, v := range db1{
+	for k, v := range db1 {
 		db2[k] = v
 	}
+	// add the entry
 	db2[newEntry.Uid] = newEntry
+	// when this is called all readers will start using the new one
 	dataStore.Store(db2)
 }
 //downvote
-func Downvote(uid string){
+func downvote(uid string) {
 	lock.Lock()
 	defer lock.Unlock()
 	db1 := dataStore.Load().(DBMap)
 	db2 := make(DBMap)
-	for k, v := range db1{
+	for k, v := range db1 {
 		db2[k] = v
 	}
 	db2[uid].Downvote++
 	dataStore.Store(db2)
 }
 //upvote
-func Upvote(uid string){
+func upvote(uid string) {
 	lock.Lock()
 	defer lock.Unlock()
 	db1 := dataStore.Load().(DBMap)
 	db2 := make(DBMap)
-	for k, v := range db1{
+	for k, v := range db1 {
 		db2[k] = v
 	}
 	db2[uid].Upvote++
@@ -63,39 +66,43 @@ func Upvote(uid string){
 }
 
 var r = gin.Default();
+
 func init() {
 	dataStore.Store(make(DBMap))
 
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/", indexpage)
-	r.POST("/write", WritePost)
-	r.GET("/up/:title", func(c *gin.Context){
-		uid := c.Param("title")
-		Upvote(uid)
-		c.Redirect(http.StatusTemporaryRedirect, "/")
-	})
-	r.GET("/down/:title", func(c *gin.Context){
-		uid := c.Param("title")
-		Downvote(uid)
-		c.Redirect(http.StatusTemporaryRedirect, "/")
-	})
-
+	r.POST("/write", writePost)
+	r.GET("/up/:title", upvotePost)
+	r.GET("/down/:title", downvotePost)
 }
 
-func Start(){
+func Start() {
 	log.Fatalln(r.Run(":8080"))
 }
 
-func WritePost (c *gin.Context) {
+func upvotePost(c *gin.Context) {
+	uid := c.Param("title")
+	upvote(uid)
+	c.Redirect(http.StatusTemporaryRedirect, "/")
+}
+
+func downvotePost(c *gin.Context) {
+	uid := c.Param("title")
+	downvote(uid)
+	c.Redirect(http.StatusTemporaryRedirect, "/")
+}
+
+func writePost(c *gin.Context) {
 	title := c.PostForm("title")
 	contents := c.PostForm("contents")
 	// make sure there is data in contents and title..
 	// this should be in the tmpl file
 	// lazyness to implement it in the tmpl file
-	if contents == ""{
+	if contents == "" {
 		c.Redirect(http.StatusMovedPermanently, "/")
 	}
-	if title == ""{
+	if title == "" {
 		c.Redirect(http.StatusMovedPermanently, "/")
 	}
 	newEntry := Entry{
@@ -103,7 +110,7 @@ func WritePost (c *gin.Context) {
 		Contents:contents,
 		Uid:uuid.NewV4().String(),
 	}
-	InsertValue(&newEntry)
+	insertValue(&newEntry)
 	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
@@ -111,10 +118,10 @@ func indexpage(c *gin.Context) {
 	var items []*Entry
 
 	db1 := dataStore.Load().(DBMap)
-	From(db1).Select(func(e interface{})interface{}{
+	From(db1).Select(func(e interface{}) interface{} {
 		return e.(KeyValue).Value
 	}).ToSlice(&items)
-	From(items).OrderByDescending(func(e interface{}) interface{}{
+	From(items).OrderByDescending(func(e interface{}) interface{} {
 		return e.(*Entry).Upvote
 	}).Take(20).ToSlice(&items)
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
